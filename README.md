@@ -78,6 +78,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 | Email | Altro provider (SendGrid, Postmark…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale |
 | Package manager | pnpm | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
 | UI kit di base | shadcn/ui | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
+| Containerizzazione | Dockerfile multi-stage + Node LTS | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante, indipendente dal cloud) |
 
 ## Come aggiungere una nuova variante — checklist
 
@@ -98,6 +99,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 - **Rinumerazione a numerazione locale per cartella** (ogni cartella riparte da `01`), al posto della sequenza globale 01-08 ereditata da Event Manager: la sequenza globale mescolava file universali e file specifici del pattern Payload in un ordine che non rifletteva più la nuova organizzazione a cartelle. Contestualmente, `02-processo-lavoro-agente.mdc` (ex `06`) è stato ripulito da riferimenti hardcoded a `stack/`/`auth/`/nomi di file specifici di questo catalogo, per essere genuinamente riusabile anche fuori da progetti Payload (es. React, Vue, iOS). *(2026-08-16)*
 - **shadcn/ui aggiunto allo stack fisso** in `01-stile-codice.mdc`, come pnpm: è la base dei componenti UI in ogni progetto di questo catalogo, non una variante per progetto. Librerie UI aggiuntive legate a una feature specifica (Tremor per dashboard, vaul per bottom sheet, sonner per toast) restano invece scelte da confermare quando la feature lo richiede, non stack fisso — coerente con la decisione, presa a proposito di Fase 1, che l'installazione di librerie UI non infrastrutturali non appartiene al setup di progetto ma alla fase/sessione in cui la feature viene introdotta. *(2026-08-16)*
 - **Nuovo asse `email/`**, emerso analizzando Fase 2 (login): il provider email transazionale (Resend in Event Manager) non è invariante come inizialmente assunto, va trattato come auth/DB/cloud. Split in invarianti (`01-email-invarianti.mdc`: usare l'adapter Payload ufficiale, verificare sempre nella pratica la durata reale dei token invece di fidarsi della documentazione, agganciare via hook l'invio se `disableLocalStrategy` è attivo) e addendum Resend (`01a-resend.mdc`: pacchetto, variabili d'ambiente, limite noto sugli allegati CID, vincoli di piano prima di un invio massivo). *(2026-08-16)*
+- **Containerizzazione (Dockerfile multi-stage + Node LTS) aggiunta allo stack fisso**, emerso analizzando Fase 3 (deploy): costruire il container non dipende da *quale* cloud lo ospiterà, solo la configurazione/deploy del servizio dipende dal provider — quindi la ricetta Docker resta invariante in `01-stile-codice.mdc`, mentre le varianti cloud (`01b-cloud-*.mdc`) coprono solo come si configura/deploya quel container sul provider scelto. *(2026-08-16)*
 
 ## Cosa manca ancora, fuori da questo repository
 
