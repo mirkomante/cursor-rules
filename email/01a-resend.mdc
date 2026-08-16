@@ -1,0 +1,20 @@
+---
+description: Addendum provider — convenzioni specifiche per Resend, da usare insieme a 01-email-invarianti.mdc
+globs: ["**/email/**", "**/*email*", "**/*resend*"]
+alwaysApply: false
+---
+
+# Addendum provider — Resend
+
+Questo file si applica **in aggiunta a** `01-email-invarianti.mdc` quando il progetto usa Resend come provider email transazionale. Non ripete gli invarianti generali — li specializza per questo provider.
+
+## Regole vincolanti
+
+- **Adapter**: `@payloadcms/email-resend`, configurato in `payload.config.ts`.
+- **Variabili d'ambiente**: `RESEND_API_KEY`, `RESEND_FROM_ADDRESS`, `RESEND_FROM_NAME` — mai hardcoded, sempre in `.env`/Secret Manager.
+- **Limite noto: nessun supporto nativo per allegati con `content_id` (CID)**. Per email che richiedono immagini incorporate nel corpo (es. un QR code inline, non come allegato scaricabile), l'adapter Payload non è sufficiente: serve una chiamata REST diretta all'API di Resend per quel singolo invio. Documentare esplicitamente questa deviazione dal percorso standard (adapter Payload) quando capita — non silenziosamente.
+- **Piano Resend**: verificare i limiti di invio del piano attivo prima di qualunque invio massivo (bulk); se il volume previsto li supera, l'upgrade a un piano superiore va pianificato ed eventualmente vincolato lato server con un guardrail esplicito, non lasciato alla sola disciplina operativa.
+
+## Se un task sembra richiedere di violare una di queste regole
+
+Fermarsi e chiedere conferma esplicita, spiegando quale invariante (di questo file o di `01-email-invarianti.mdc`) verrebbe violato.

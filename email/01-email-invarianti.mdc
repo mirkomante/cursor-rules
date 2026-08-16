@@ -1,0 +1,21 @@
+---
+description: Invarianti per l'invio di email transazionali, indipendenti dal provider scelto
+globs: ["**/email/**", "**/*email*"]
+alwaysApply: false
+---
+
+# Invarianti email transazionali
+
+Queste regole si applicano a qualunque file che gestisca invio di email transazionali (attivazione utente, reset password, notifiche di sistema) — **indipendentemente da quale provider** sia stato scelto per questo progetto (vedi il file di variante corrispondente in `email/`, es. `01a-resend.mdc`, per le convenzioni specifiche del provider).
+
+## Regole vincolanti
+
+- **Usare sempre l'adapter email ufficiale di Payload** per il provider scelto (es. `@payloadcms/email-resend`), non implementare un invio SMTP o HTTP custom parallelo per i flussi nativi (attivazione utente, reset password) — a meno di un limite documentato dell'adapter che lo renda necessario per un caso specifico (vedi il file di variante).
+- **Credenziali del provider sempre in variabili d'ambiente**, mai hardcoded, mai committate.
+- **Verificare sempre nella pratica la durata reale dei token** di attivazione/reset generati dal framework, non assumerla dalla documentazione: può differire dal default dichiarato a seconda della versione. Se il valore reale differisce da quanto pianificato in una specifica di progetto, documentarlo esplicitamente — non introdurre configurazione custom per "correggerlo" se non esplicitamente richiesto (vedi `01-proporzionalita.mdc` in `core/`).
+- **Se l'autenticazione locale disabilita la strategia nativa** (es. per convivere con un login SSO sulla stessa collection — vedi `auth/01-autenticazione-invarianti.mdc`), il trigger delle email di verifica/reset non è più automatico: va agganciato esplicitamente via hook — non assumere che l'adapter email lo gestisca da solo in questo scenario.
+- **Comportamento e messaggistica coerenti indipendentemente dal provider**: un fallimento nell'invio dell'email non deve produrre un comportamento o un messaggio diverso rispetto a un successo, se non esplicitamente previsto — non esporre all'utente dettagli tecnici del provider.
+
+## Se un task sembra richiedere di violare una di queste regole
+
+Fermarsi e chiedere conferma esplicita, spiegando quale invariante verrebbe violata.

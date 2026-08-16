@@ -2,9 +2,9 @@
 
 Catalogo **master** di regole Cursor (`.mdc`) per progetti Next.js + PayloadCMS v3 con architettura a quattro aree: `(payload)`/Admin, `(app)` per i gestori dei dati, `(frontend)` pubblico, e API headless verso LP/siti/webapp esterne.
 
-Questo repository **non è l'istanza di un progetto**: è la fonte da cui si **compone** la cartella `.cursor/rules/` di ogni nuovo progetto reale, scegliendo solo i file pertinenti tra invarianti universali e varianti tecniche (provider auth, database, ambiente cloud).
+Questo repository **non è l'istanza di un progetto**: è la fonte da cui si **compone** la cartella `.cursor/rules/` di ogni nuovo progetto reale, scegliendo solo i file pertinenti tra invarianti universali e varianti tecniche (provider auth, provider email, database, ambiente cloud).
 
-**`core/` è indipendente da Payload e dallo stack**: è scritto per qualunque progetto Cursor (React, Vue, un'app iOS, ecc.), non solo per questo pattern — puoi copiarlo così com'è anche in un progetto che non usa Payload. `payload-pattern/`, `auth/` e `stack/` sono invece specifici di questo pattern architetturale.
+**`core/` è indipendente da Payload e dallo stack**: è scritto per qualunque progetto Cursor (React, Vue, un'app iOS, ecc.), non solo per questo pattern — puoi copiarlo così com'è anche in un progetto che non usa Payload. `payload-pattern/`, `auth/`, `email/` e `stack/` sono invece specifici di questo pattern architetturale.
 
 Origine: estratto e generalizzato dal progetto Event Manager (sessione di analisi 2026-08-16).
 
@@ -26,8 +26,13 @@ auth/               invarianti sempre inclusi + UNA variante per progetto
   01a-google-oauth.mdc
   01a-*.mdc          (altri provider, stessa lettera = stesso asse "provider auth"; da scrivere quando servirà)
 
+email/              invarianti sempre inclusi + UNA variante per progetto
+  01-email-invarianti.mdc
+  01a-resend.mdc
+  01a-*.mdc          (altri provider, stessa lettera = stesso asse "provider email"; da scrivere quando servirà)
+
 stack/              regole di stile universali + UNA variante per asse (DB, cloud)
-  01-stile-codice.mdc         (include pnpm come standard fisso, non variante)
+  01-stile-codice.mdc         (include pnpm e shadcn/ui come standard fissi, non varianti)
   01a-db-mongodb.mdc
   01a-db-postgres.mdc          (da scrivere quando servirà — stessa lettera "a" = asse database)
   01b-cloud-gcp.mdc
@@ -47,10 +52,11 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 
 1. Copiare sempre tutto `core/` e tutto `payload-pattern/` (quest'ultimo solo se il progetto adotta l'architettura a 4 aree — altrimenti valutare caso per caso quali regole restano valide).
 2. Scegliere una variante da `auth/` (oggi disponibile solo Google OAuth — `01a-google-oauth.mdc`).
-3. Scegliere una variante da `stack/` per il DB (oggi solo MongoDB — `01a-db-mongodb.mdc`) e per il cloud (oggi solo GCP/Cloud Run — `01b-cloud-gcp.mdc`).
-4. **Package manager e UI kit di base**: nessuna scelta da fare — pnpm e shadcn/ui sono fissi, inclusi direttamente in `01-stile-codice.mdc`. Se un progetto specifico impone un'alternativa per un vincolo esterno, annotarlo come deviazione locale nel file di quel progetto, non come nuova variante di catalogo, a meno che ricorra su più progetti.
-5. Compilare i placeholder specifici di progetto (vedi sotto).
-6. Copiare **solo** i file scelti dentro `.cursor/rules/` del progetto reale — non l'intero catalogo.
+3. Scegliere una variante da `email/` (oggi disponibile solo Resend — `01a-resend.mdc`).
+4. Scegliere una variante da `stack/` per il DB (oggi solo MongoDB — `01a-db-mongodb.mdc`) e per il cloud (oggi solo GCP/Cloud Run — `01b-cloud-gcp.mdc`).
+5. **Package manager e UI kit di base**: nessuna scelta da fare — pnpm e shadcn/ui sono fissi, inclusi direttamente in `01-stile-codice.mdc`. Se un progetto specifico impone un'alternativa per un vincolo esterno, annotarlo come deviazione locale nel file di quel progetto, non come nuova variante di catalogo, a meno che ricorra su più progetti.
+6. Compilare i placeholder specifici di progetto (vedi sotto).
+7. Copiare **solo** i file scelti dentro `.cursor/rules/` del progetto reale — non l'intero catalogo.
 
 ## Placeholder da compilare per ogni nuovo progetto
 
@@ -68,6 +74,8 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 | Cloud | Google Cloud Run | `01b-cloud-gcp.mdc` | ✅ pronta |
 | Cloud | Azure | `01b-cloud-azure.mdc` | 🔲 da scrivere quando servirà |
 | Cloud | AWS | `01b-cloud-aws.mdc` | 🔲 da scrivere quando servirà |
+| Email | Resend | `01a-resend.mdc` | ✅ pronta |
+| Email | Altro provider (SendGrid, Postmark…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale |
 | Package manager | pnpm | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
 | UI kit di base | shadcn/ui | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
 
@@ -89,6 +97,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 - `04-changelog-commit.mdc` validato contro `00-come-eseguire-il-piano.md` di Event Manager: nessuna incoerenza; i riferimenti a path (`docs/piano-sviluppo/...`) restano validi perché fanno parte della struttura documentale che si sta standardizzando. *(2026-08-16)*
 - **Rinumerazione a numerazione locale per cartella** (ogni cartella riparte da `01`), al posto della sequenza globale 01-08 ereditata da Event Manager: la sequenza globale mescolava file universali e file specifici del pattern Payload in un ordine che non rifletteva più la nuova organizzazione a cartelle. Contestualmente, `02-processo-lavoro-agente.mdc` (ex `06`) è stato ripulito da riferimenti hardcoded a `stack/`/`auth/`/nomi di file specifici di questo catalogo, per essere genuinamente riusabile anche fuori da progetti Payload (es. React, Vue, iOS). *(2026-08-16)*
 - **shadcn/ui aggiunto allo stack fisso** in `01-stile-codice.mdc`, come pnpm: è la base dei componenti UI in ogni progetto di questo catalogo, non una variante per progetto. Librerie UI aggiuntive legate a una feature specifica (Tremor per dashboard, vaul per bottom sheet, sonner per toast) restano invece scelte da confermare quando la feature lo richiede, non stack fisso — coerente con la decisione, presa a proposito di Fase 1, che l'installazione di librerie UI non infrastrutturali non appartiene al setup di progetto ma alla fase/sessione in cui la feature viene introdotta. *(2026-08-16)*
+- **Nuovo asse `email/`**, emerso analizzando Fase 2 (login): il provider email transazionale (Resend in Event Manager) non è invariante come inizialmente assunto, va trattato come auth/DB/cloud. Split in invarianti (`01-email-invarianti.mdc`: usare l'adapter Payload ufficiale, verificare sempre nella pratica la durata reale dei token invece di fidarsi della documentazione, agganciare via hook l'invio se `disableLocalStrategy` è attivo) e addendum Resend (`01a-resend.mdc`: pacchetto, variabili d'ambiente, limite noto sugli allegati CID, vincoli di piano prima di un invio massivo). *(2026-08-16)*
 
 ## Cosa manca ancora, fuori da questo repository
 
