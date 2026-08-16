@@ -12,6 +12,7 @@ Queste scelte sono standard personali, valide per ogni progetto di questo catalo
 
 - Next.js (App Router) + PayloadCMS v3, un solo progetto.
 - Tailwind CSS per lo styling.
+- **shadcn/ui** come libreria di componenti UI di base (Admin panel escluso: ha il proprio styling nativo Payload, non va toccato).
 - **pnpm** come package manager di riferimento (`pnpm-lock.yaml` + campo `packageManager` in `package.json`). Non usare npm/yarn per install o script: evita di mescolare lockfile e `node_modules`.
 
 Per il database e l'ambiente cloud di questo progetto, vedere il file di variante incluso in `.cursor/rules/` (es. `01a-db-mongodb.mdc`, `01b-cloud-gcp.mdc`).
@@ -19,7 +20,7 @@ Per il database e l'ambiente cloud di questo progetto, vedere il file di variant
 ## Regole vincolanti
 
 - **TypeScript strict**: non introdurre `any` senza una motivazione esplicita commentata nel codice; preferire tipi derivati da Payload (tipi generati) dove disponibili.
-- **Styling**: usare Tailwind. Non introdurre CSS-in-JS, moduli CSS paralleli, o librerie di componenti UI aggiuntive senza che sia una scelta discussa e confermata.
+- **Styling**: usare Tailwind + shadcn/ui come base. Non introdurre CSS-in-JS, moduli CSS paralleli, o altre librerie di componenti UI senza che sia una scelta discussa e confermata (es. Tremor per dashboard, vaul per bottom sheet, sonner per toast — legittime, ma da confermare quando la feature lo richiede, non da assumere a priori).
 - **Lingua**:
   - Nomi di variabili, funzioni, tipi, file → **inglese**.
   - Commenti nel codice, messaggi di log, testo destinato all'interfaccia utente (UI) → **italiano**, coerente con la lingua di lavoro del progetto.

@@ -48,7 +48,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 1. Copiare sempre tutto `core/` e tutto `payload-pattern/` (quest'ultimo solo se il progetto adotta l'architettura a 4 aree — altrimenti valutare caso per caso quali regole restano valide).
 2. Scegliere una variante da `auth/` (oggi disponibile solo Google OAuth — `01a-google-oauth.mdc`).
 3. Scegliere una variante da `stack/` per il DB (oggi solo MongoDB — `01a-db-mongodb.mdc`) e per il cloud (oggi solo GCP/Cloud Run — `01b-cloud-gcp.mdc`).
-4. **Package manager**: nessuna scelta da fare — pnpm è fisso, incluso direttamente in `01-stile-codice.mdc`. Se un progetto specifico impone npm/yarn per un vincolo esterno, annotarlo come deviazione locale nel file di quel progetto, non come nuova variante di catalogo, a meno che ricorra su più progetti.
+4. **Package manager e UI kit di base**: nessuna scelta da fare — pnpm e shadcn/ui sono fissi, inclusi direttamente in `01-stile-codice.mdc`. Se un progetto specifico impone un'alternativa per un vincolo esterno, annotarlo come deviazione locale nel file di quel progetto, non come nuova variante di catalogo, a meno che ricorra su più progetti.
 5. Compilare i placeholder specifici di progetto (vedi sotto).
 6. Copiare **solo** i file scelti dentro `.cursor/rules/` del progetto reale — non l'intero catalogo.
 
@@ -69,6 +69,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 | Cloud | Azure | `01b-cloud-azure.mdc` | 🔲 da scrivere quando servirà |
 | Cloud | AWS | `01b-cloud-aws.mdc` | 🔲 da scrivere quando servirà |
 | Package manager | pnpm | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
+| UI kit di base | shadcn/ui | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
 
 ## Come aggiungere una nuova variante — checklist
 
@@ -87,6 +88,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 - `02-processo-lavoro-agente.mdc`: gli esempi di "passaggi esterni" riformulati per categoria (database di produzione, autenticazione esterna, ambiente cloud, DNS) invece che per prodotto specifico, per restare validi senza bisogno di aggiornarli a ogni nuova variante aggiunta al catalogo. *(2026-08-16)*
 - `04-changelog-commit.mdc` validato contro `00-come-eseguire-il-piano.md` di Event Manager: nessuna incoerenza; i riferimenti a path (`docs/piano-sviluppo/...`) restano validi perché fanno parte della struttura documentale che si sta standardizzando. *(2026-08-16)*
 - **Rinumerazione a numerazione locale per cartella** (ogni cartella riparte da `01`), al posto della sequenza globale 01-08 ereditata da Event Manager: la sequenza globale mescolava file universali e file specifici del pattern Payload in un ordine che non rifletteva più la nuova organizzazione a cartelle. Contestualmente, `02-processo-lavoro-agente.mdc` (ex `06`) è stato ripulito da riferimenti hardcoded a `stack/`/`auth/`/nomi di file specifici di questo catalogo, per essere genuinamente riusabile anche fuori da progetti Payload (es. React, Vue, iOS). *(2026-08-16)*
+- **shadcn/ui aggiunto allo stack fisso** in `01-stile-codice.mdc`, come pnpm: è la base dei componenti UI in ogni progetto di questo catalogo, non una variante per progetto. Librerie UI aggiuntive legate a una feature specifica (Tremor per dashboard, vaul per bottom sheet, sonner per toast) restano invece scelte da confermare quando la feature lo richiede, non stack fisso — coerente con la decisione, presa a proposito di Fase 1, che l'installazione di librerie UI non infrastrutturali non appartiene al setup di progetto ma alla fase/sessione in cui la feature viene introdotta. *(2026-08-16)*
 
 ## Cosa manca ancora, fuori da questo repository
 
