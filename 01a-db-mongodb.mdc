@@ -1,0 +1,15 @@
+---
+description: Variante database — MongoDB (locale in sviluppo, Atlas in produzione)
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+# Variante database — MongoDB
+
+Questo file si applica in aggiunta a `01-stile-codice.mdc` quando il progetto usa MongoDB come database.
+
+## Regole vincolanti
+
+- **MongoDB Community Server locale** in sviluppo; **MongoDB Atlas** al deploy (tier gratuito M0 iniziale, upgrade a un tier a pagamento prima dell'uso reale in produzione — dettaglio nella fase di setup e nella fase di deploy del progetto).
+- **Connection string sempre in `DATABASE_URL`** (variabile d'ambiente, mai hardcoded nel codice, mai committata).
+- Adapter Payload: `mongooseAdapter`, configurato nel file di configurazione principale puntando a `DATABASE_URL`.

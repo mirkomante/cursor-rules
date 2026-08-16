@@ -26,7 +26,7 @@ Non è, e non deve mai diventare, "due applicazioni" da far comunicare a distanz
 - Comunicazione tra codice e Payload:
   - **Server-side** (Server Components/Server Actions nel route group App) → **Local API** di Payload, chiamata diretta in-process.
   - **Client-side** (browser) → **REST API** o **GraphQL API** di Payload, comunque same-origin.
-- Dati di configurazione che possono cambiare senza deploy (es. allow-list domini per il login) si leggono **sempre** da un Global di Payload gestito da pannello Admin, **mai** da costanti hardcoded nel codice — vedi `04-convenzioni-payload.mdc` per la regola generale Global vs Collection vs hardcoded.
+- Dati di configurazione che possono cambiare senza deploy (es. allow-list domini per il login) si leggono **sempre** da un Global di Payload gestito da pannello Admin, **mai** da costanti hardcoded nel codice — vedi `02-convenzioni-payload.mdc` per la regola generale Global vs Collection vs hardcoded.
 
 ## Cosa fare se un task sembra richiedere di violare queste regole
 
