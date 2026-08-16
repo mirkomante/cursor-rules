@@ -1,0 +1,15 @@
+---
+description: Variante ambiente cloud — Google Cloud Run + Secret Manager
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+# Variante ambiente cloud — Google Cloud Run
+
+Questo file si applica in aggiunta a `05-stile-codice.mdc` quando il progetto viene deployato su Google Cloud Run.
+
+## Regole vincolanti
+
+- Deploy su **Google Cloud Run**, build via Cloud Build a partire da un `Dockerfile` multi-stage nel repo.
+- Segreti e variabili sensibili in **Google Cloud Secret Manager**, mai in file committati.
+- Dettaglio operativo di configurazione (cluster/servizio, region, secret, redirect URI di produzione) è specifico della fase di deploy del progetto, non di questa regola di stile.

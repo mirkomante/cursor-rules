@@ -1,0 +1,28 @@
+---
+description: Invarianti di autenticazione e sicurezza, indipendenti dal provider SSO scelto
+globs: ["**/auth/**", "**/collections/users*", "**/*oauth*", "**/*sso*", "**/(payload)/**"]
+alwaysApply: false
+---
+
+# Invarianti di autenticazione e sicurezza
+
+Queste regole si applicano a qualunque file che tocchi login, sessione, collection `users`, o configurazione del provider di autenticazione — **indipendentemente da quale provider SSO** sia stato scelto per questo progetto (vedi il file di variante corrispondente in `auth/`, es. `03a-google-oauth.mdc`, per gli invarianti specifici del provider).
+
+## Regole vincolanti
+
+- **Separazione netta tra i flussi di login**: se il progetto supporta sia un login SSO esterno sia un login locale (es. per un super-admin di bootstrap), i due flussi non devono mai mescolarsi:
+  - Il flusso SSO **non deve mai** leggere, confrontare o toccare il campo `password`, anche quando il record ha anche una password locale impostata.
+  - Il flusso locale **non deve mai** bypassare il confronto password, nemmeno quando l'utente è valido anche per l'SSO.
+- **Messaggio di rifiuto identico**: qualunque motivo di rifiuto login (dominio/tenant non autorizzato, utente non censito, utente inattivo, password errata) deve produrre **esattamente lo stesso messaggio generico** lato utente. Non differenziare mai il messaggio in base alla causa reale, nemmeno per "aiutare" l'utente.
+- **Nessun autoprovisioning**: un utente deve esistere come record nella collection `users`, creato in anticipo da un Admin, prima di poter effettuare il primo login. Appartenere a un dominio/tenant autorizzato non è mai sufficiente da solo.
+- **Nessuna informazione di identità va fidata lato client**: qualunque dato usato per decidere l'accesso (dominio, tenant, gruppo, ruolo) va sempre rivalidato lato server, mai dedotto da un parametro letto lato client o passato dal browser.
+- **Isolamento tra istanze/aree**: se lo stesso provider SSO viene usato per più aree (es. Admin e App) sulla stessa collection `users`, le rispettive configurazioni/istanze devono restare isolate (identificatori distinti) per non entrare in conflitto tra loro.
+- **Login standard delle aree protette mostra solo il pulsante del provider SSO configurato**: un eventuale form locale (tipicamente riservato al super-admin di bootstrap) vive esclusivamente su una route separata e non linkata da nessun menu o link visibile.
+- **Guardrail non rimovibili senza conferma esplicita dell'umano**:
+  - Non deve essere possibile eliminare o disattivare l'ultimo super-admin locale rimasto.
+  - Non deve essere possibile salvare una allow-list di identità/domini/tenant autorizzati se risulterebbe vuota.
+  - Nessun utente Admin diverso dal/dai super-admin di bootstrap può avere credenziali locali.
+
+## Se un task sembra richiedere di violare una di queste regole
+
+Fermarsi e chiedere conferma esplicita, spiegando quale invariante verrebbe violata. Non procedere per inerzia solo perché il task lo chiede in modo implicito.
