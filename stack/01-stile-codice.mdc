@@ -14,6 +14,7 @@ Queste scelte sono standard personali, valide per ogni progetto di questo catalo
 - Tailwind CSS per lo styling.
 - **shadcn/ui** come libreria di componenti UI di base (Admin panel escluso: ha il proprio styling nativo Payload, non va toccato).
 - **pnpm** come package manager di riferimento (`pnpm-lock.yaml` + campo `packageManager` in `package.json`). Non usare npm/yarn per install o script: evita di mescolare lockfile e `node_modules`.
+- **Containerizzazione via Dockerfile multi-stage** per il deploy, indipendentemente dal cloud provider scelto: build con pnpm (verificare `allowBuilds` in `pnpm-workspace.yaml` per pacchetti con binari nativi, es. `sharp`/`esbuild`/`unrs-resolver`, prima di scrivere lo stage di build) → immagine finale minimale (niente devDependencies, niente cache di build, niente toolchain). `.dockerignore` almeno per `node_modules`, `.next`, `.git`, `.env*`. Node in versione **LTS attiva** (`engines.node` in `package.json` + immagine base corrispondente). `next.config.ts` con `output: 'standalone'`. Questa scelta è indipendente da *quale* cloud ospiterà il container — resta la stessa sia che il target sia Cloud Run, Azure Container Apps, o altro (vedi il file di variante cloud per come si configura/deploya il container su quel provider specifico, non per come si costruisce).
 
 Per il database e l'ambiente cloud di questo progetto, vedere il file di variante incluso in `.cursor/rules/` (es. `01a-db-mongodb.mdc`, `01b-cloud-gcp.mdc`).
 
