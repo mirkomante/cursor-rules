@@ -1,6 +1,6 @@
 ---
 description: Addendum provider — invarianti specifici per login Google OAuth (via payload-oauth2), da usare insieme a 01-autenticazione-invarianti.mdc
-globs: ["**/auth/**", "**/collections/users*", "**/*oauth*", "**/(payload)/**", "**/middleware.ts", "**/lib/session*", "**/lib/auth*"]
+globs: ["**/auth/**", "**/collections/users*", "**/*oauth*", "**/(payload)/**", "**/middleware.ts", "**/lib/session*", "**/lib/auth*", "**/login/**", "**/payload.config.ts"]
 alwaysApply: false
 ---
 

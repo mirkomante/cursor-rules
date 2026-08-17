@@ -57,7 +57,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 4. Scegliere una variante da `stack/` per il DB (oggi solo MongoDB — `01a-db-mongodb.mdc`) e per il cloud (oggi solo GCP/Cloud Run — `01b-cloud-gcp.mdc`).
 5. **Package manager e UI kit di base**: nessuna scelta da fare — pnpm e shadcn/ui sono fissi, inclusi direttamente in `01-stile-codice.mdc`. Se un progetto specifico impone un'alternativa per un vincolo esterno, annotarlo come deviazione locale nel file di quel progetto, non come nuova variante di catalogo, a meno che ricorra su più progetti.
 6. Compilare i placeholder specifici di progetto (vedi sotto).
-7. Copiare **solo** i file scelti dentro `.cursor/rules/` del progetto reale — non l'intero catalogo.
+7. Copiare **solo** i file scelti dentro `.cursor/rules/` del progetto reale — non l'intero catalogo, **mantenendo la struttura a sottocartelle** (vedi "Convenzione di naming" sopra: non appiattire).
 
 ## Placeholder da compilare per ogni nuovo progetto
 
@@ -102,6 +102,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 - **Nuovo asse `email/`**, emerso analizzando Fase 2 (login): il provider email transazionale (Resend in Event Manager) non è invariante come inizialmente assunto, va trattato come auth/DB/cloud. Split in invarianti (`01-email-invarianti.mdc`: usare l'adapter Payload ufficiale, verificare sempre nella pratica la durata reale dei token invece di fidarsi della documentazione, agganciare via hook l'invio se `disableLocalStrategy` è attivo) e addendum Resend (`01a-resend.mdc`: pacchetto, variabili d'ambiente, limite noto sugli allegati CID, vincoli di piano prima di un invio massivo). *(2026-08-16)*
 - **Containerizzazione (Dockerfile multi-stage + Node LTS) aggiunta allo stack fisso**, emerso analizzando Fase 3 (deploy): costruire il container non dipende da *quale* cloud lo ospiterà, solo la configurazione/deploy del servizio dipende dal provider — quindi la ricetta Docker resta invariante in `01-stile-codice.mdc`, mentre le varianti cloud (`01b-cloud-*.mdc`) coprono solo come si configura/deploya quel container sul provider scelto. *(2026-08-16)*
 - **Glob allargati per auth/ ed email/**, dopo una revisione esterna (Cursor Composer): `middleware.ts`, `lib/session*`, `lib/auth*` aggiunti agli invarianti/addendum auth; `payload.config.ts` aggiunto agli invarianti/addendum email — i glob precedenti rischiavano di non far caricare la regola sui file dove la logica auth/email vive davvero. Aggiunta anche la nota esplicita sul mantenimento delle sottocartelle in `.cursor/rules/` del progetto reale (Convenzione di naming), non appiattirle. *(2026-08-17)*
+- **Secondo giro di correzione glob auth**, dopo verifica del fix precedente (Cursor Composer): aggiunto `payload.config.ts` anche ai glob auth (stesso gap già risolto per email — è lì che si configurano le istanze del plugin OAuth, e nessuno dei glob precedenti lo intercettava); aggiunto `login/**` all'addendum Google OAuth per simmetria con gli invarianti, dato che la pagina di login custom contiene sia il bottone SSO sia il form locale nello stesso file. Aggiunto anche il rimando incrociato nel punto 7 della procedura di composizione, verso la nota sulle sottocartelle. *(2026-08-17)*
 
 ## Cosa manca ancora, fuori da questo repository
 
