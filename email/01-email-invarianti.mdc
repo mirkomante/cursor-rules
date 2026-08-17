@@ -1,6 +1,6 @@
 ---
 description: Invarianti per l'invio di email transazionali, indipendenti dal provider scelto
-globs: ["**/email/**", "**/*email*"]
+globs: ["**/email/**", "**/*email*", "**/payload.config.ts"]
 alwaysApply: false
 ---
 
