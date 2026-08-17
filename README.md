@@ -66,20 +66,22 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 
 ## Catalogo varianti — stato attuale
 
-| Asse | Variante | File | Stato |
-|---|---|---|---|
-| Auth | Google OAuth + fallback locale super-admin | `01a-google-oauth.mdc` | ✅ pronta |
-| Auth | Altro provider (Azure AD, Auth0, magic link…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale |
-| DB | MongoDB | `01a-db-mongodb.mdc` | ✅ pronta |
-| DB | PostgreSQL | `01a-db-postgres.mdc` | 🔲 da scrivere quando servirà |
-| Cloud | Google Cloud Run | `01b-cloud-gcp.mdc` | ✅ pronta |
-| Cloud | Azure | `01b-cloud-azure.mdc` | 🔲 da scrivere quando servirà |
-| Cloud | AWS | `01b-cloud-aws.mdc` | 🔲 da scrivere quando servirà |
-| Email | Resend | `01a-resend.mdc` | ✅ pronta |
-| Email | Altro provider (SendGrid, Postmark…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale |
-| Package manager | pnpm | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
-| UI kit di base | shadcn/ui | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) |
-| Containerizzazione | Dockerfile multi-stage + Node LTS | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante, indipendente dal cloud) |
+| Asse | Variante | File | Stato | Ultima verifica su progetto reale |
+|---|---|---|---|---|
+| Auth | Google OAuth + fallback locale super-admin | `01a-google-oauth.mdc` | ✅ pronta | Event Manager (2026-08) |
+| Auth | Altro provider (Azure AD, Auth0, magic link…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale | — |
+| DB | MongoDB | `01a-db-mongodb.mdc` | ✅ pronta | Event Manager (2026-08) |
+| DB | PostgreSQL | `01a-db-postgres.mdc` | 🔲 da scrivere quando servirà | — |
+| Cloud | Google Cloud Run | `01b-cloud-gcp.mdc` | ✅ pronta | Event Manager (2026-08) |
+| Cloud | Azure | `01b-cloud-azure.mdc` | 🔲 da scrivere quando servirà | — |
+| Cloud | AWS | `01b-cloud-aws.mdc` | 🔲 da scrivere quando servirà | — |
+| Email | Resend | `01a-resend.mdc` | ✅ pronta | Event Manager (2026-08) |
+| Email | Altro provider (SendGrid, Postmark…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale | — |
+| Package manager | pnpm | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) | — |
+| UI kit di base | shadcn/ui | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) | — |
+| Containerizzazione | Dockerfile multi-stage + Node LTS | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante, indipendente dal cloud) | — |
+
+> **Nota**: "Event Manager (2026-08)" è il progetto di origine da cui queste regole sono state estratte — non un progetto successivo che le ha ri-validate da zero. Aggiornare questa colonna con un progetto e una data nuovi quando una variante viene effettivamente riusata (non solo riletta) in un progetto successivo — distingue una variante "scritta" da una "collaudata più di una volta".
 
 ## Come aggiungere una nuova variante — checklist
 
