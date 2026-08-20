@@ -1,6 +1,6 @@
 ---
 description: Variante ambiente cloud — Google Cloud Run + Secret Manager
-globs: ["**/*.ts", "**/*.tsx"]
+globs: **/Dockerfile, **/next.config.ts, **/.env*, **/cloudbuild.yaml
 alwaysApply: false
 ---
 

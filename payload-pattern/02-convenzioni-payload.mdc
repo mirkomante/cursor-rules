@@ -1,6 +1,6 @@
 ---
 description: Convenzioni per collection e global di PayloadCMS
-globs: ["**/collections/**", "**/globals/**"]
+globs: **/collections/**, **/globals/**
 alwaysApply: false
 ---
 

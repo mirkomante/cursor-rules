@@ -1,6 +1,6 @@
 ---
 description: Addendum provider — convenzioni specifiche per Resend, da usare insieme a 01-email-invarianti.mdc
-globs: ["**/email/**", "**/*email*", "**/*resend*", "**/payload.config.ts"]
+globs: **/email/**, **/*email*, **/*resend*, **/payload.config.ts
 alwaysApply: false
 ---
 

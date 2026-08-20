@@ -1,6 +1,6 @@
 ---
 description: Variante database — MongoDB (locale in sviluppo, Atlas in produzione)
-globs: ["**/*.ts", "**/*.tsx"]
+globs: **/payload.config.ts, **/.env*, **/lib/db*
 alwaysApply: false
 ---
 

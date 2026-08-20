@@ -1,6 +1,6 @@
 ---
 description: Stile del codice e convenzioni universali dello stack (package manager e styling fissi, DB/cloud a parte)
-globs: ["**/*.ts", "**/*.tsx"]
+globs: **/*.ts, **/*.tsx
 alwaysApply: false
 ---
 
