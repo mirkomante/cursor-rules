@@ -2,6 +2,7 @@
 description: Convenzioni per collection e global di PayloadCMS
 globs: **/collections/**, **/globals/**
 alwaysApply: false
+stato: validato
 ---
 
 # Convenzioni PayloadCMS — collection e global

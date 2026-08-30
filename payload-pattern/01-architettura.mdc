@@ -2,6 +2,7 @@
 description: Architettura del progetto — un solo sistema, tre/quattro aree URL, comunicazione same-origin
 globs:
 alwaysApply: true
+stato: validato
 ---
 
 # Architettura del progetto

@@ -2,6 +2,7 @@
 description: Changelog obbligatorio e controllo di coerenza documentale prima di ogni commit
 globs:
 alwaysApply: true
+stato: validato
 ---
 
 # Changelog e controllo pre-commit

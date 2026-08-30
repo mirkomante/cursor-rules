@@ -2,6 +2,7 @@
 description: Invarianti di autenticazione e sicurezza, indipendenti dal provider SSO scelto
 globs: **/auth/**, **/collections/users*, **/*oauth*, **/*sso*, **/(payload)/**, **/middleware.ts, **/lib/session*, **/lib/auth*, **/login/**, **/payload.config.ts
 alwaysApply: false
+stato: validato
 ---
 
 # Invarianti di autenticazione e sicurezza

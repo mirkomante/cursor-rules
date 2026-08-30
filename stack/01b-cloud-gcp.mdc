@@ -2,6 +2,7 @@
 description: Variante ambiente cloud — Google Cloud Run + Secret Manager
 globs: **/Dockerfile, **/next.config.ts, **/.env*, **/cloudbuild.yaml
 alwaysApply: false
+stato: validato
 ---
 
 # Variante ambiente cloud — Google Cloud Run

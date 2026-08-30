@@ -2,6 +2,7 @@
 description: Processo di lavoro dell'agente — conferme, documentazione, gestione blocchi e passaggi esterni
 globs:
 alwaysApply: true
+stato: validato
 ---
 
 # Processo di lavoro con l'agente

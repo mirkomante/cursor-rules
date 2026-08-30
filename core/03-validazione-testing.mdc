@@ -2,6 +2,7 @@
 description: Validazione del codice ad ogni passaggio e test in ambiente dev solo su funzionalità testabili
 globs:
 alwaysApply: true
+stato: validato
 ---
 
 # Validazione e testing

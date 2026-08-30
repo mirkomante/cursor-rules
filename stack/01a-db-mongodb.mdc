@@ -2,6 +2,7 @@
 description: Variante database — MongoDB (locale in sviluppo, Atlas in produzione)
 globs: **/payload.config.ts, **/.env*, **/lib/db*
 alwaysApply: false
+stato: validato
 ---
 
 # Variante database — MongoDB

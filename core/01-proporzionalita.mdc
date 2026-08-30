@@ -2,6 +2,7 @@
 description: Principio di proporzionalità — soluzioni adeguate al progetto, non over-engineering
 globs:
 alwaysApply: true
+stato: validato
 ---
 
 # Principio di proporzionalità
