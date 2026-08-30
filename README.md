@@ -91,6 +91,23 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 - Aggiornare la tabella sopra con stato ✅ e data.
 - Verificare che `02-processo-lavoro-agente.mdc` e gli altri file di `core/` restino generici senza bisogno di modifiche — dovrebbero già parlare per categoria ("database di produzione", "autenticazione esterna") e non per prodotto specifico.
 
+## Trigger di revisione e verifica meccanica
+
+Una modifica a un file dentro **`auth/`**, **`email/`** o **`stack/`** innesca un passo fisso di revisione, prima che il file possa tornare a `stato: validato`. Non si applica a `core/` (universale, nessun asse di variante) né a `payload-pattern/` (pattern architetturale unico, non un asse con alternative).
+
+**1. Verifica meccanica** (`tools/check-rules.js`, in sequenza obbligata):
+```
+node tools/check-rules.js check-schema
+node tools/check-rules.js check-globs
+```
+`check-schema` verifica frontmatter e tipi; se fallisce, `check-globs` non va eseguito (non ha senso verificare la copertura di un file che Cursor sta comunque saltando). `check-globs` confronta la copertura reale dei glob — calcolata con `minimatch` contro l'albero in `__fixtures__/` — con la baseline confermata in `__fixtures__/expected-coverage.json`. Se lo strumento segnala `DRIFT`, decidere esplicitamente se il cambiamento di copertura è voluto (e confermarlo con `--write-baseline`) o è un bug nel glob da correggere prima.
+
+**2. Revisione con Cursor Composer**, sul file modificato, con questo prompt standard:
+
+> Confronta questo file con gli altri file dello stesso asse (stessa cartella), segnala contraddizioni.
+
+Solo dopo che *entrambi* i passi non segnalano problemi, il file torna a `stato: validato` (o `superato` se è un secondo giro di revisione).
+
 ## Decisioni prese e perché (log sintetico)
 
 - **Struttura ad assi indipendenti**, non un mega-file condizionale ("se usi X allora Y"): riduce il rischio che l'agente applichi la regola sbagliata o si confonda su quale ramo vale per il progetto corrente. Il file esiste solo se la scelta è stata fatta per quel progetto. *(2026-08-16)*
@@ -106,6 +123,9 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 - **Glob allargati per auth/ ed email/**, dopo una revisione esterna (Cursor Composer): `middleware.ts`, `lib/session*`, `lib/auth*` aggiunti agli invarianti/addendum auth; `payload.config.ts` aggiunto agli invarianti/addendum email — i glob precedenti rischiavano di non far caricare la regola sui file dove la logica auth/email vive davvero. Aggiunta anche la nota esplicita sul mantenimento delle sottocartelle in `.cursor/rules/` del progetto reale (Convenzione di naming), non appiattirle. *(2026-08-17)*
 - **Secondo giro di correzione glob auth**, dopo verifica del fix precedente (Cursor Composer): aggiunto `payload.config.ts` anche ai glob auth (stesso gap già risolto per email — è lì che si configurano le istanze del plugin OAuth, e nessuno dei glob precedenti lo intercettava); aggiunto `login/**` all'addendum Google OAuth per simmetria con gli invarianti, dato che la pagina di login custom contiene sia il bottone SSO sia il form locale nello stesso file. Aggiunto anche il rimando incrociato nel punto 7 della procedura di composizione, verso la nota sulle sottocartelle. *(2026-08-17)*
 - **Formato `globs` convertito da array/quotato a stringa nuda separata da virgole** (`**/auth/**, **/*oauth*, ...` invece di `["**/auth/**", "**/*oauth*", ...]`), su tutti gli 8 file Auto Attach — segnalato da una revisione esterna (chat separata su workflow/agenti): le fonti sul formato reale del frontmatter `.mdc` sono in conflitto, ma più fonti specifiche sul parsing effettivo indicano che la forma ad array/quotata fallisce silenziosamente. Conversione fatta per precauzione (nessun costo se il formato precedente fosse comunque valido) — **da validare empiricamente su Cursor reale** prima di considerarla definitivamente chiusa. Ristretti anche i glob di `01a-db-mongodb.mdc` e `01b-cloud-gcp.mdc`, prima identici a quelli di `01-stile-codice.mdc` (`**/*.ts, **/*.tsx`, troppo ampio per il loro contenuto puntuale) — ora `payload.config.ts`/`.env*`/`lib/db*` e `Dockerfile`/`next.config.ts`/`.env*`/`cloudbuild.yaml` rispettivamente. Precisata anche la nota sulla colonna "ultima verifica su progetto reale": va aggiornata anche quando il riuso ha richiesto una correzione, non solo quando ha funzionato senza modifiche. *(2026-08-17)*
+
+- **`tools/check-rules.js` creato** (§4.1 di `processo-v2-operativo.md`), sottocomandi `check-schema` e `check-globs` in sequenza obbligata. `check-schema`: frontmatter parsabile, campi obbligatori (`description`, `globs`, `alwaysApply`, `stato`), tipi corretti — `globs` vuoto ammesso solo con `alwaysApply: true`, altrimenti errore esplicito (evita che una regola diventi silenziosamente Agent Requested/Manual per una dimenticanza). `check-globs`: copertura reale via `minimatch` contro `__fixtures__/`, con baseline confermata in `expected-coverage.json` — due modalità, discovery (nessun giudizio automatico, la conferma resta umana) e confronto (segnala drift). Aggiunto frontmatter `stato: validato` retroattivamente a tutti i 13 file esistenti, dato che erano già passati per revisione. *(2026-08-30)*
+- **Due buchi di copertura reali trovati dalla prima esecuzione di `check-globs` in discovery**, corretti in `auth/01-autenticazione-invarianti.mdc` e `auth/01a-google-oauth.mdc`: `**/collections/users*` non copriva `collections/Users.ts` (case-sensitivity — il file Payload reale è capitalizzato, il pattern minuscolo no) → cambiato in `**/collections/[Uu]sers*`; `**/*oauth*`/`**/*sso*` da soli non coprono una cartella intermedia come `app/api/oauth/callback/route.ts` (il pattern matcha solo l'ultimo segmento del path) → aggiunti `**/oauth/**` (invarianti + google-oauth) e `**/sso/**` (solo invarianti, per la stessa differenza intenzionale già esistente tra i due file). Verificato invece che `lib/resend.ts` resti correttamente escluso dagli invarianti email generali (coperto solo dalla variante `01a-resend.mdc`) — nessuna modifica lì, comportamento confermato intenzionale. *(2026-08-30)*
 
 ## Cosa manca ancora, fuori da questo repository
 
