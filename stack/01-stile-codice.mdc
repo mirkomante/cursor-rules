@@ -1,0 +1,30 @@
+---
+description: Stile del codice e convenzioni universali dello stack (package manager e styling fissi, DB/cloud a parte)
+globs: **/*.ts, **/*.tsx
+alwaysApply: false
+stato: validato
+---
+
+# Stile del codice e convenzioni universali
+
+## Stack fisso di riferimento
+
+Queste scelte sono standard personali, valide per ogni progetto di questo catalogo (non variano per progetto — a differenza di database e ambiente cloud, vedi i file di variante in `stack/`):
+
+- Next.js (App Router) + PayloadCMS v3, un solo progetto.
+- Tailwind CSS per lo styling.
+- **shadcn/ui** come libreria di componenti UI di base (Admin panel escluso: ha il proprio styling nativo Payload, non va toccato).
+- **pnpm** come package manager di riferimento (`pnpm-lock.yaml` + campo `packageManager` in `package.json`). Non usare npm/yarn per install o script: evita di mescolare lockfile e `node_modules`.
+- **Containerizzazione via Dockerfile multi-stage** per il deploy, indipendentemente dal cloud provider scelto: build con pnpm (verificare `allowBuilds` in `pnpm-workspace.yaml` per pacchetti con binari nativi, es. `sharp`/`esbuild`/`unrs-resolver`, prima di scrivere lo stage di build) → immagine finale minimale (niente devDependencies, niente cache di build, niente toolchain). `.dockerignore` almeno per `node_modules`, `.next`, `.git`, `.env*`. Node in versione **LTS attiva** (`engines.node` in `package.json` + immagine base corrispondente). `next.config.ts` con `output: 'standalone'`. Questa scelta è indipendente da *quale* cloud ospiterà il container — resta la stessa sia che il target sia Cloud Run, Azure Container Apps, o altro (vedi il file di variante cloud per come si configura/deploya il container su quel provider specifico, non per come si costruisce).
+
+Per il database e l'ambiente cloud di questo progetto, vedere il file di variante incluso in `.cursor/rules/` (es. `01a-db-mongodb.mdc`, `01b-cloud-gcp.mdc`).
+
+## Regole vincolanti
+
+- **TypeScript strict**: non introdurre `any` senza una motivazione esplicita commentata nel codice; preferire tipi derivati da Payload (tipi generati) dove disponibili.
+- **Styling**: usare Tailwind + shadcn/ui come base. Non introdurre CSS-in-JS, moduli CSS paralleli, o altre librerie di componenti UI senza che sia una scelta discussa e confermata (es. Tremor per dashboard, vaul per bottom sheet, sonner per toast — legittime, ma da confermare quando la feature lo richiede, non da assumere a priori).
+- **Lingua**:
+  - Nomi di variabili, funzioni, tipi, file → **inglese**.
+  - Commenti nel codice, messaggi di log, testo destinato all'interfaccia utente (UI) → **italiano**, coerente con la lingua di lavoro del progetto.
+- **Coerenza con le decisioni già prese**: prima di introdurre una libreria o un pattern nuovo non previsto nella documentazione di progetto, verificare se esiste già una decisione equivalente presa altrove (es. provider email, plugin OAuth) ed evitare soluzioni parallele per lo stesso problema.
+- **Niente logica duplicata**: se una regola di autorizzazione, validazione o normalizzazione esiste già in un punto del codice (es. una funzione di controllo permessi, una validazione dominio), riusarla — non reimplementarla localmente in un altro file.
