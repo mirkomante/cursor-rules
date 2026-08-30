@@ -1,0 +1,8 @@
+{
+  "name": "cursor-rules",
+  "private": true,
+  "description": "Catalogo regole .mdc per Cursor - strumenti di verifica meccanica (check-rules.js)",
+  "devDependencies": {
+    "minimatch": "^9.0.0"
+  }
+}

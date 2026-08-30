@@ -1,0 +1,63 @@
+{
+  "auth/01-autenticazione-invarianti.mdc": [
+    "app/(app)/login/page.tsx",
+    "app/(payload)/admin/page.tsx",
+    "app/api/oauth/callback/route.ts",
+    "app/api/sso/callback/route.ts",
+    "collections/Users.ts",
+    "lib/auth/session.ts",
+    "lib/session.ts",
+    "middleware.ts",
+    "payload.config.ts"
+  ],
+  "auth/01a-google-oauth.mdc": [
+    "app/(app)/login/page.tsx",
+    "app/(payload)/admin/page.tsx",
+    "app/api/oauth/callback/route.ts",
+    "collections/Users.ts",
+    "lib/auth/session.ts",
+    "lib/session.ts",
+    "middleware.ts",
+    "payload.config.ts"
+  ],
+  "email/01-email-invarianti.mdc": [
+    "lib/email/send.ts",
+    "payload.config.ts"
+  ],
+  "email/01a-resend.mdc": [
+    "lib/email/send.ts",
+    "lib/resend.ts",
+    "payload.config.ts"
+  ],
+  "payload-pattern/02-convenzioni-payload.mdc": [
+    "collections/Users.ts",
+    "globals/Settings.ts"
+  ],
+  "stack/01-stile-codice.mdc": [
+    "app/(app)/login/page.tsx",
+    "app/(payload)/admin/page.tsx",
+    "app/api/oauth/callback/route.ts",
+    "app/api/sso/callback/route.ts",
+    "collections/Users.ts",
+    "globals/Settings.ts",
+    "lib/auth/session.ts",
+    "lib/db/connect.ts",
+    "lib/email/send.ts",
+    "lib/resend.ts",
+    "lib/session.ts",
+    "lib/utils.ts",
+    "middleware.ts",
+    "next.config.ts",
+    "payload.config.ts"
+  ],
+  "stack/01a-db-mongodb.mdc": [
+    ".env.local",
+    "payload.config.ts"
+  ],
+  "stack/01b-cloud-gcp.mdc": [
+    ".env.local",
+    "Dockerfile",
+    "cloudbuild.yaml",
+    "next.config.ts"
+  ]
+}
