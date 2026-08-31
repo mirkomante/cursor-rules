@@ -1,0 +1,53 @@
+---
+description: Log applicativo di azioni utente e chiamate API (collection activityLog) — schema e meccanismo generali, riusabili oltre gli eventi di autenticazione
+globs: **/collections/ActivityLog*, **/lib/activityLog*, **/collections/[Uu]sers*
+alwaysApply: false
+stato: bozza
+---
+
+# Log azioni utente e API — collection `activityLog`
+
+Questo file riguarda **solo** il log applicativo di cosa fanno gli utenti (e le chiamate API) sui dati — non i log tecnici (errori, richieste, debug), che restano nel sistema di logging nativo del cloud scelto e non passano da questa collection (vedi il file di variante cloud in `stack/`, es. `01b-cloud-gcp.mdc`).
+
+Gli eventi di autenticazione (login, logout, accesso negato) sono il primo caso d'uso di questo meccanismo e restano descritti in `fase-2-login.md` §2.9 del template di piano-sviluppo. Questo file generalizza lo stesso schema e lo stesso meccanismo per qualunque altra azione su un documento (creazione, modifica, cancellazione), così da non reinventarlo a ogni progetto che ne ha bisogno.
+
+## Perché un hook di collection basta anche per le chiamate API
+
+Gli hook di Payload (`afterChange`, `afterDelete`, ecc.) vivono **sulla collection**, non sul canale di accesso: si attivano allo stesso modo indipendentemente dal fatto che la scrittura arrivi da Local API (Server Components/Server Actions), REST, GraphQL o pannello Admin — lo stesso principio già usato per l'hook `afterLogin`, che "si attiva indipendentemente da quale istanza/area ha autenticato, perché vive sulla collection e non sulla singola istanza del plugin/provider".
+
+Conseguenza diretta: **non serve un log API separato**. Un log delle chiamate API costruito a parte (es. a livello di middleware o route handler) loggerebbe due volte lo stesso evento già intercettato dall'hook di collection, con il rischio concreto che i due registri divergano.
+
+**Eccezione esplicita**: un endpoint custom che non passa da un'operazione di collection Payload (es. una route handler scritta a mano che non salva tramite Payload) resta fuori da questo meccanismo. Se un progetto ha bisogno di tracciare anche quel caso, è una decisione da prendere e documentare a parte — non presupposta da questa regola.
+
+## Schema (generale, riusabile per qualunque evento)
+
+Stessa collection unica `activityLog` già usata per gli eventi di autenticazione (non una collection per tipo di evento), con lo schema esteso:
+
+- `user` (relationship a `users`)
+- `timestamp` (automatico)
+- `area` (select: admin/app, opzionale)
+- `eventType` — **enum aperto**: include i valori auth già in uso (`login`/`logout`/`accessDenied`) più `create`/`update`/`delete` per azioni sui documenti, ed eventuali altri eventi applicativi del progetto. Enum aperto per accogliere valori futuri senza migrazione di schema, coerente con `02-convenzioni-payload.mdc`.
+- `method` (select: sso/local) — resta specifico degli eventi auth, non applicabile alle azioni CRUD.
+- `collection` (text o select col nome della collection interessata) — solo per eventi non-auth.
+- `documentId` (text/id del documento interessato) — solo per eventi non-auth.
+
+Non aggiungere altri campi generici (es. `previousValue`/`newValue` per un diff dei campi cambiati) finché non li richiede un evento realmente progettato: emergeranno quando servirà davvero un `eventType` specifico, non vanno indovinati ora — coerente con `01-proporzionalita.mdc`.
+
+## Meccanismo di popolamento
+
+Una funzione condivisa (es. `lib/activityLog.ts`, `logActivity(...)`) richiamata dagli hook `afterChange`/`afterDelete` delle collection interessate. Non duplicare la logica di scrittura dentro ogni collection: un solo punto che sa come scrivere un record di `activityLog`, richiamato ovunque serva.
+
+## Attivazione: decisione di progetto, non default
+
+Questo è il punto che distingue il meccanismo (generale, di catalogo) dalla sua attivazione (specifica di progetto):
+
+- Gli eventi di autenticazione sono già decisi come invarianti di catalogo: sono eventi di sicurezza, non "eventi ordinari".
+- Per qualunque altra collection, **quali azioni tracciare — e se tracciarle affatto — è una decisione esplicita di progetto**, da dichiarare nella documentazione (o in un ADR, se condiziona più fasi a valle), non da assumere silenziosamente. `01-proporzionalita.mdc` vieta esplicitamente di introdurre "audit trail dedicati per eventi ordinari" non richiesti: agganciare questo hook a ogni collection per default violerebbe quella regola.
+- Se una specifica di progetto richiede di tracciare le modifiche su una collection sensibile (es. per un vincolo di compliance), è quello il momento di attivare il meccanismo su quella collection — non prima.
+
+## Cosa NON fare
+
+- Non creare una collection di log separata per ogni tipo di evento: resta un'unica `activityLog`.
+- Non costruire un log API dedicato se le scritture passano già da hook di collection: è lo stesso evento, non uno aggiuntivo da tracciare due volte.
+- Non agganciare il meccanismo a tutte le collection del progetto "perché può tornare utile": va deciso e dichiarato collection per collection, solo quando un requisito reale lo richiede.
+- Non confondere questo log con i log tecnici (errori, richieste, debug del runtime): quelli restano nel sistema di logging nativo del cloud scelto, non in questa collection.

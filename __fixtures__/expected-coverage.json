@@ -35,16 +35,24 @@
     "payload.config.ts"
   ],
   "payload-pattern/02-convenzioni-payload.mdc": [
+    "collections/ActivityLog.ts",
     "collections/Users.ts",
     "globals/Settings.ts"
+  ],
+  "payload-pattern/03-log-azioni.mdc": [
+    "collections/ActivityLog.ts",
+    "collections/Users.ts",
+    "lib/activityLog.ts"
   ],
   "stack/01-stile-codice.mdc": [
     "app/(app)/login/page.tsx",
     "app/(payload)/admin/page.tsx",
     "app/api/oauth/callback/route.ts",
     "app/api/sso/callback/route.ts",
+    "collections/ActivityLog.ts",
     "collections/Users.ts",
     "globals/Settings.ts",
+    "lib/activityLog.ts",
     "lib/auth/session.ts",
     "lib/authHelpers.ts",
     "lib/db/connect.ts",
