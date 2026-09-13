@@ -51,6 +51,7 @@
     "app/api/sso/callback/route.ts",
     "collections/ActivityLog.ts",
     "collections/Users.ts",
+    "drizzle.config.ts",
     "globals/Settings.ts",
     "lib/activityLog.ts",
     "lib/auth/session.ts",
@@ -69,6 +70,13 @@
   "stack/01a-db-mongodb.mdc": [
     ".env.local",
     "lib/db/connect.ts",
+    "payload.config.ts"
+  ],
+  "stack/01a-db-postgres.mdc": [
+    ".env.local",
+    "drizzle.config.ts",
+    "lib/db/connect.ts",
+    "migrations/0000_init.sql",
     "payload.config.ts"
   ],
   "stack/01b-cloud-gcp.mdc": [

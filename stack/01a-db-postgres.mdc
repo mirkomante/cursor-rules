@@ -1,0 +1,18 @@
+---
+description: Variante database — PostgreSQL (stessa tecnologia in locale e produzione)
+globs: **/payload.config.ts, **/.env*, **/lib/db*, **/lib/db/**, **/migrations/**, **/drizzle.config.ts
+alwaysApply: false
+stato: validato
+---
+
+# Variante database — PostgreSQL
+
+Questo file si applica in aggiunta a `01-stile-codice.mdc` quando il progetto usa PostgreSQL come database.
+
+## Regole vincolanti
+
+- **PostgreSQL in esecuzione in locale** in sviluppo — nessun metodo di installazione specifico richiesto da questo catalogo. Stessa tecnologia in produzione: a differenza di MongoDB, non c'è cambio di database tra ambienti.
+- **Connection string sempre in `DATABASE_URL`** (variabile d'ambiente, mai hardcoded nel codice, mai committata) — stessa convenzione dell'asse database, indipendente dalla tecnologia (non `DATABASE_URI`).
+- Adapter Payload: `postgresAdapter`, configurato nel file di configurazione principale puntando a `DATABASE_URL`.
+- **Migrazioni vincolanti, non opzionali**: `push: true` ammesso solo in sviluppo; `payload migrate` obbligatorio in ogni altro ambiente. Le migrazioni di produzione si eseguono manualmente da locale, puntando temporaneamente alla connection string di produzione — stesso pattern del seed di bootstrap (vedi fase di deploy), non un passo automatico nella pipeline di build/deploy.
+- **Versione minima `Payload >= 3.73.0` obbligatoria** per questo adapter — corregge CVE-2026-25544 (SQL injection sugli adapter Drizzle-based, Postgres/SQLite; non riguarda MongoDB).

@@ -35,7 +35,7 @@ email/              invarianti sempre inclusi + UNA variante per progetto
 stack/              regole di stile universali + UNA variante per asse (DB, cloud)
   01-stile-codice.mdc         (include pnpm e shadcn/ui come standard fissi, non varianti)
   01a-db-mongodb.mdc
-  01a-db-postgres.mdc          (da scrivere quando servirà — stessa lettera "a" = asse database)
+  01a-db-postgres.mdc          (stessa lettera "a" = asse database)
   01b-cloud-gcp.mdc
   01b-cloud-azure.mdc          (da scrivere quando servirà — stessa lettera "b" = asse cloud)
   01b-cloud-aws.mdc            (da scrivere quando servirà)
@@ -55,7 +55,7 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 1. Copiare sempre tutto `core/` e tutto `payload-pattern/` (quest'ultimo solo se il progetto adotta l'architettura a 4 aree — altrimenti valutare caso per caso quali regole restano valide).
 2. Scegliere una variante da `auth/` (oggi disponibile solo Google OAuth — `01a-google-oauth.mdc`).
 3. Scegliere una variante da `email/` (oggi disponibile solo Resend — `01a-resend.mdc`).
-4. Scegliere una variante da `stack/` per il DB (oggi solo MongoDB — `01a-db-mongodb.mdc`) e per il cloud (oggi solo GCP/Cloud Run — `01b-cloud-gcp.mdc`).
+4. Scegliere una variante da `stack/` per il DB (MongoDB — `01a-db-mongodb.mdc` — o PostgreSQL — `01a-db-postgres.mdc`) e per il cloud (oggi solo GCP/Cloud Run — `01b-cloud-gcp.mdc`).
 5. **Package manager e UI kit di base**: nessuna scelta da fare — pnpm e shadcn/ui sono fissi, inclusi direttamente in `01-stile-codice.mdc`. Se un progetto specifico impone un'alternativa per un vincolo esterno, annotarlo come deviazione locale nel file di quel progetto, non come nuova variante di catalogo, a meno che ricorra su più progetti.
 6. Compilare i placeholder specifici di progetto (vedi sotto).
 7. Copiare **solo** i file scelti dentro `.cursor/rules/` del progetto reale — non l'intero catalogo, **mantenendo la struttura a sottocartelle** (vedi "Convenzione di naming" sopra: non appiattire).
@@ -67,22 +67,22 @@ Passo preliminare, prima della Fase 1 di sviluppo:
 
 ## Catalogo varianti — stato attuale
 
-| Asse | Variante | File | Stato | Ultima verifica su progetto reale |
+| Asse | Variante | File | Stato | Ultima scrittura/riuso confermato |
 |---|---|---|---|---|
-| Auth | Google OAuth + fallback locale super-admin | `01a-google-oauth.mdc` | ✅ pronta | Event Manager (2026-08) |
+| Auth | Google OAuth + fallback locale super-admin | `01a-google-oauth.mdc` | ✅ pronta | 2026-08 |
 | Auth | Altro provider (Azure AD, Auth0, magic link…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale | — |
-| DB | MongoDB | `01a-db-mongodb.mdc` | ✅ pronta | Event Manager (2026-08) |
-| DB | PostgreSQL | `01a-db-postgres.mdc` | 🔲 da scrivere quando servirà | — |
-| Cloud | Google Cloud Run | `01b-cloud-gcp.mdc` | ✅ pronta | Event Manager (2026-08) |
+| DB | MongoDB | `01a-db-mongodb.mdc` | ✅ pronta | 2026-08 |
+| DB | PostgreSQL | `01a-db-postgres.mdc` | ✅ pronta | 2026-09 |
+| Cloud | Google Cloud Run | `01b-cloud-gcp.mdc` | ✅ pronta | 2026-08 |
 | Cloud | Azure | `01b-cloud-azure.mdc` | 🔲 da scrivere quando servirà | — |
 | Cloud | AWS | `01b-cloud-aws.mdc` | 🔲 da scrivere quando servirà | — |
-| Email | Resend | `01a-resend.mdc` | ✅ pronta | Event Manager (2026-08) |
+| Email | Resend | `01a-resend.mdc` | ✅ pronta | 2026-08 |
 | Email | Altro provider (SendGrid, Postmark…) | `01a-*.mdc` | 🔲 da scrivere quando servirà un progetto reale | — |
 | Package manager | pnpm | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) | — |
 | UI kit di base | shadcn/ui | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante) | — |
 | Containerizzazione | Dockerfile multi-stage + Node LTS | incluso fisso in `01-stile-codice.mdc` | ✅ (non è una variante, indipendente dal cloud) | — |
 
-> **Nota**: "Event Manager (2026-08)" è il progetto di origine da cui queste regole sono state estratte — non un progetto successivo che le ha ri-validate da zero. Aggiornare questa colonna con un progetto e una data nuovi quando una variante viene effettivamente riusata (non solo riletta) in un progetto successivo — sia che abbia funzionato senza modifiche, sia che il riuso abbia richiesto una correzione (la correzione stessa resta tracciata da Git; qui si aggiorna comunque con la data del riuso che l'ha causata). Distingue una variante "scritta" da una "collaudata più di una volta".
+> **Nota**: la colonna riporta solo la data dell'ultima scrittura o riuso confermato di una variante — non il progetto specifico. La provenienza per progetto è tracciata separatamente, fuori da questo repository. Aggiornare la data quando una variante viene effettivamente riusata (non solo riletta) in un progetto successivo — sia che abbia funzionato senza modifiche, sia che il riuso abbia richiesto una correzione (la correzione stessa resta tracciata da Git; qui si aggiorna comunque con la data del riuso che l'ha causata). Distingue una variante "scritta" da una "collaudata più di una volta".
 
 ## Come aggiungere una nuova variante — checklist
 
@@ -128,6 +128,8 @@ Solo dopo che *entrambi* i passi non segnalano problemi, il file torna a `stato:
 - **`tools/check-rules.js` creato** (§4.1 di `processo-v2-operativo.md`), sottocomandi `check-schema` e `check-globs` in sequenza obbligata. `check-schema`: frontmatter parsabile, campi obbligatori (`description`, `globs`, `alwaysApply`, `stato`), tipi corretti — `globs` vuoto ammesso solo con `alwaysApply: true`, altrimenti errore esplicito (evita che una regola diventi silenziosamente Agent Requested/Manual per una dimenticanza). `check-globs`: copertura reale via `minimatch` contro `__fixtures__/`, con baseline confermata in `expected-coverage.json` — due modalità, discovery (nessun giudizio automatico, la conferma resta umana) e confronto (segnala drift). Aggiunto frontmatter `stato: validato` retroattivamente a tutti i 13 file esistenti, dato che erano già passati per revisione. *(2026-08-30)*
 - **Due buchi di copertura reali trovati dalla prima esecuzione di `check-globs` in discovery**, corretti in `auth/01-autenticazione-invarianti.mdc` e `auth/01a-google-oauth.mdc`: `**/collections/users*` non copriva `collections/Users.ts` (case-sensitivity — il file Payload reale è capitalizzato, il pattern minuscolo no) → cambiato in `**/collections/[Uu]sers*`; `**/*oauth*`/`**/*sso*` da soli non coprono una cartella intermedia come `app/api/oauth/callback/route.ts` (il pattern matcha solo l'ultimo segmento del path) → aggiunti `**/oauth/**` (invarianti + google-oauth) e `**/sso/**` (solo invarianti, per la stessa differenza intenzionale già esistente tra i due file). Verificato invece che `lib/resend.ts` resti correttamente escluso dagli invarianti email generali (coperto solo dalla variante `01a-resend.mdc`) — nessuna modifica lì, comportamento confermato intenzionale. *(2026-08-30)*
 - **Nuovo file `payload-pattern/03-log-azioni.mdc`** (`stato: bozza`, da validare): generalizza lo schema e il meccanismo di `activityLog` — finora descritti solo per gli eventi di autenticazione in `fase-2-login.md` §2.9 di `cursor-payload-template` — a qualunque azione su un documento (create/update/delete), incluse le chiamate API. Motivazione dell'unico meccanismo per Payload e API: gli hook (`afterChange`/`afterDelete`) vivono sulla collection, non sul canale di accesso, quindi coprono Local API/REST/GraphQL/Admin allo stesso modo — un log API separato duplicherebbe lo stesso evento. Aggiunta esplicita, per evitare la contraddizione con `01-proporzionalita.mdc` (che vieta "audit trail dedicati per eventi ordinari" non richiesti): il meccanismo è di catalogo, ma *quali* collection/azioni tracciare resta una decisione di progetto da dichiarare, non un default acceso su tutto. Non soggetto al trigger di revisione Composer (vive in `payload-pattern/`, non su un asse con varianti), ma verificato con `check-schema`/`check-globs` — aggiunte le fixture `collections/ActivityLog.ts` e `lib/activityLog.ts`, baseline aggiornata di conseguenza (nuova copertura anche per `02-convenzioni-payload.mdc` e `01-stile-codice.mdc`, entrambi già a glob larghi che intercettano correttamente qualunque file di collection/qualunque `.ts`). Aggiunto anche un rimando incrociato da `02-convenzioni-payload.mdc` verso questo file. *(2026-08-31)*
+- **Nuova variante database `01a-db-postgres.mdc`**, richiesta da un progetto reale in corso: adapter `postgresAdapter`, convenzione `DATABASE_URL` invariata rispetto all'asse, migrazioni (`payload migrate`) vincolanti fuori dallo sviluppo — eseguite manualmente da locale contro l'ambiente di produzione, non in pipeline di build/deploy, stesso pattern del seed di bootstrap — e requisito di versione `Payload >= 3.73.0` (CVE-2026-25544, adapter Drizzle-based). Nessun metodo di installazione locale fissato a livello di catalogo: a differenza della scelta fatta per MongoDB (Community Server come standard fisso), qui la scelta resta neutra e lasciata al singolo progetto — il metodo d'installazione, a differenza del "quale database gira in locale", non è mai stato lo standard fissato nemmeno per Mongo. Verificato con `check-schema`/`check-globs` (fixture `migrations/0000_init.sql` e `drizzle.config.ts` aggiunte, baseline confermata — copertura in più anche su `01-stile-codice.mdc`, glob `**/*.ts` già intercetta il file Drizzle, comportamento corretto) e revisione Cursor Composer sull'asse `stack/` (nessuna contraddizione con `01a-db-mongodb.mdc`/`01b-cloud-gcp.mdc`; suggerimenti opzionali su `01-stile-codice.mdc` valutati e non applicati, coerenti con la scelta di non aggiornare gli esempi illustrativi del file base ad ogni nuova variante). Passata a `stato: validato`. *(2026-09-13)*
+- **Rimossi i nomi di progetto dalla colonna "ultima scrittura/riuso confermato"** in tutte le righe della tabella "Catalogo varianti" (in precedenza indicavano il progetto di origine): la provenienza per progetto è ora tracciata in un file separato, fuori da questo repository, per evitare che nomi di progetti/clienti finiscano in un catalogo pensato per essere riutilizzabile senza portarsi dietro la storia di chi lo ha usato. *(2026-09-13)*
 
 ## Cosa manca ancora, fuori da questo repository
 
