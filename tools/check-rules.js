@@ -2,7 +2,7 @@
 /**
  * tools/check-rules.js
  *
- * Verifica meccanica dei file .mdc in cursor-rules (processo-v2-operativo.md, §4.1).
+ * Verifica meccanica dei file .mdc in cursor-rules (vedi cursor-payload-template/processo-v2-operativo.md, §4.1).
  *
  * Sottocomandi (eseguiti in sequenza obbligata, mai in parallelo):
  *   check-schema  — frontmatter parsabile e conforme. Non richiede fixture.
